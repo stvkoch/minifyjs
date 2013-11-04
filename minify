@@ -1,11 +1,12 @@
 #!/bin/bash
 # Very simple minify
-
 #
 # minifyJs http://js.sapo.pt/SAPO/0.1/ jsfile.js dsada.js bah.js foo.js > bar.min.js
 #
 # using gzip:
 #  minifyJs http://js.sapo.pt/SAPO/0.1/ jsfile.js dsada.js bah.js foo.js | gzip > bar.min.gz
+#
+
 
 PATH_CURRENT_MINIFY=`dirname "${0}"`
 RANDNAME_FILE="tempFile-${RANDOM}.js"
