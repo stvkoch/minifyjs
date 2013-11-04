@@ -1,3 +1,45 @@
-## A New Post
+#!/bin/bash
+# Very simple minify
 
-Enter text in [Markdown](http://daringfireball.net/projects/markdown/). Use the toolbar above, or click the **?** button for formatting help.
+#
+# minifyJs http://js.sapo.pt/SAPO/0.1/ jsfile.js dsada.js bah.js foo.js > bar.min.js
+#
+# using gzip:
+#  minifyJs http://js.sapo.pt/SAPO/0.1/ jsfile.js dsada.js bah.js foo.js | gzip > bar.min.gz
+
+PATH_CURRENT_MINIFY=`dirname "${0}"`
+RANDNAME_FILE="tempFile-${RANDOM}.js"
+touch $RANDNAME_FILE
+
+#concat all files
+if [ $# != 0 ]; then
+	for f in $@
+	do
+		echo ";/*minify $f*/" >> ${RANDNAME_FILE}
+		if [[ $f == http://* ]]; then
+			wget "${f}" -q -O - >> ${RANDNAME_FILE}
+			f=$RANDNAME_FILE
+		else
+			cat $f >> ${RANDNAME_FILE}
+		fi
+	done
+else
+	#maybe you like minify all files on current folder? :P
+	FILES="${PWD}/*"
+	#for f in $FILES
+	#do
+	#echo "/*minify $f*/"
+	#  cat $f >> "${RANDNAME_FILE}"
+	#done
+fi;
+
+
+echo "/*"
+echo "Minification generate at:"
+date +"%c"
+echo "*/";
+#minify
+java -jar $PATH_CURRENT_MINIFY/yuicompressor-2.4.8.jar --nomunge --preserve-semi --disable-optimizations $RANDNAME_FILE;
+
+
+rm $RANDNAME_FILE
